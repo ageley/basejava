@@ -3,7 +3,7 @@
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[3];
-    private int size = size();
+    private int size = 0;
 
     void clear() {
         for (int i = 0; i < size; i++) {
@@ -56,12 +56,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        int size = storage.length;
-        for (int i = 0; i < size; i++) {
-            if (storage[i] == null) {
-                size = i;
-            }
-        }
         return size;
     }
 }
