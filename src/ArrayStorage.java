@@ -32,11 +32,10 @@ public class ArrayStorage {
 
     void delete(String uuid) {
         if (uuid != null) {
-            for (int i = size - 1; i >= 0; i--) {
+            for (int i = 0; i < size; i++) {
                 if (storage[i].uuid.equals(uuid)) {
-                    for (int k = i; k < size - 1; k++) {
-                        storage[k] = storage[k+1];
-                    }
+                    storage[i] = storage[size - 1];
+                    storage[size - 1] = null;
                     size--;
                     break;
                 }
