@@ -1,21 +1,24 @@
 package ru.topjava.webapp;
 
 import ru.topjava.webapp.model.Resume;
-import ru.topjava.webapp.storage.ArrayStorage;
+import ru.topjava.webapp.storage.SortedArrayStorage;
+import ru.topjava.webapp.storage.Storage;
+
+import java.util.Arrays;
 
 /**
  * Test for your ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+    static final Storage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
         Resume resume1 = new Resume();
         resume1.setUuid("uuid1");
-        Resume resume2 = new Resume();
-        resume2.setUuid("uuid2");
         Resume resume3 = new Resume();
         resume3.setUuid("uuid3");
+        Resume resume2 = new Resume();
+        resume2.setUuid("uuid2");
         Resume resume3Update = new Resume();
         resume3Update.setUuid("uuid3");
         Resume resume4 = new Resume();
@@ -35,11 +38,14 @@ public class MainTestArrayStorage {
         System.out.println("Update non-existing resume4");
         ARRAY_STORAGE.update(resume4);
 
+        System.out.println("resume2 index: " + Arrays.binarySearch(ARRAY_STORAGE.getAll(), resume2));
         printAll();
-        ARRAY_STORAGE.delete(resume1.getUuid());
+        ARRAY_STORAGE.delete(resume2.getUuid());
         printAll();
+        System.out.println("resume2 index: " + Arrays.binarySearch(ARRAY_STORAGE.getAll(), resume2));
         ARRAY_STORAGE.clear();
         printAll();
+        System.out.println("resume2 index: " + Arrays.binarySearch(ARRAY_STORAGE.getAll(), resume2));
 
         System.out.println("Size: " + ARRAY_STORAGE.size());
     }
