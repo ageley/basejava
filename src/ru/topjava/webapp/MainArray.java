@@ -1,6 +1,7 @@
 package ru.topjava.webapp;
 
 import ru.topjava.webapp.model.Resume;
+import ru.topjava.webapp.storage.ArrayStorage;
 import ru.topjava.webapp.storage.SortedArrayStorage;
 import ru.topjava.webapp.storage.Storage;
 
@@ -13,14 +14,38 @@ import java.io.InputStreamReader;
  * (just run, no need to understand)
  */
 public class MainArray {
-    private final static Storage ARRAY_STORAGE = new SortedArrayStorage();
+    private static Storage arrayStorage;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Resume resume;
+        String[] params;
+        storageChoice: while (true) {
+            System.out.print("Выберите тип хранилища - (sort | unsort | exit): ");
+            params = reader.readLine().trim().toLowerCase().split(" ");
+            if (params.length < 1 || params.length > 2) {
+                System.out.println("Неверная команда.");
+                continue;
+            }
+            switch (params[0]) {
+                case "sort":
+                    System.out.println("Выбранный тип хранилища: отсортированный массив.");
+                    arrayStorage = new SortedArrayStorage();
+                    break storageChoice;
+                case "unsort":
+                    System.out.println("Выбранный тип хранилища: неотсортированный массив.");
+                    arrayStorage = new ArrayStorage();
+                    break storageChoice;
+                case "exit":
+                    return;
+                default:
+                    System.out.println("Неверная команда.");
+                    break;
+            }
+        }
         while (true) {
             System.out.print("Введите одну из команд - (list | save uuid | update uuid | delete uuid | get uuid | clear | exit): ");
-            String[] params = reader.readLine().trim().toLowerCase().split(" ");
+            params = reader.readLine().trim().toLowerCase().split(" ");
             if (params.length < 1 || params.length > 2) {
                 System.out.println("Неверная команда.");
                 continue;
@@ -34,29 +59,29 @@ public class MainArray {
                     printAll();
                     break;
                 case "size":
-                    System.out.println(ARRAY_STORAGE.size());
+                    System.out.println(arrayStorage.size());
                     break;
                 case "save":
                     resume = new Resume();
                     resume.setUuid(uuid);
-                    ARRAY_STORAGE.save(resume);
+                    arrayStorage.save(resume);
                     printAll();
                     break;
                 case "update":
                     resume = new Resume();
                     resume.setUuid(uuid);
-                    ARRAY_STORAGE.update(resume);
+                    arrayStorage.update(resume);
                     printAll();
                     break;
                 case "delete":
-                    ARRAY_STORAGE.delete(uuid);
+                    arrayStorage.delete(uuid);
                     printAll();
                     break;
                 case "get":
-                    System.out.println(ARRAY_STORAGE.get(uuid));
+                    System.out.println(arrayStorage.get(uuid));
                     break;
                 case "clear":
-                    ARRAY_STORAGE.clear();
+                    arrayStorage.clear();
                     printAll();
                     break;
                 case "exit":
@@ -69,7 +94,7 @@ public class MainArray {
     }
 
     static void printAll() {
-        Resume[] all = ARRAY_STORAGE.getAll();
+        Resume[] all = arrayStorage.getAll();
         System.out.println("----------------------------");
         if (all.length == 0) {
             System.out.println("Empty");

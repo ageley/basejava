@@ -12,12 +12,36 @@ public abstract class AbstractArrayStorage implements Storage {
     protected final Resume[] storage = new Resume[STORAGE_LENGTH];
     protected int size = 0;
 
+    protected abstract int getIndex(String uuid);
+
+    protected abstract void saveByIndex(int resumeIndex, Resume resume);
+
+    protected abstract void deleteByIndex(int resumeIndex);
+
+    public void save(Resume resume) {
+        int resumeIndex = getIndex(resume.getUuid());
+        if (resumeIndex >= 0) {
+            System.out.println(String.format("ERROR ru.topjava.webapp.storage.ArrayStorage.save: uuid '%1$s' is already exists", resume.getUuid()));
+        } else if (size >= STORAGE_LENGTH) {
+            System.out.println("ERROR ru.topjava.webapp.storage.ArrayStorage.save: storage is full");
+        } else {
+            saveByIndex(resumeIndex, resume);
+        }
+    }
+
+    public void delete(String uuid) {
+        int resumeIndex = getIndex(uuid);
+        if (resumeIndex < 0) {
+            System.out.println(String.format("ERROR ru.topjava.webapp.storage.ArrayStorage.delete: uuid '%1$s' is not exists", uuid));
+        } else {
+            deleteByIndex(resumeIndex);
+        }
+    }
+
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
-
-    public abstract void save(Resume resume);
 
     public Resume get(String uuid) {
         int resumeIndex = getIndex(uuid);
@@ -28,8 +52,6 @@ public abstract class AbstractArrayStorage implements Storage {
             return storage[resumeIndex];
         }
     }
-
-    public abstract void delete(String uuid);
 
     /**
      * @return array, contains only Resumes in storage (without null)
@@ -50,6 +72,4 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[resumeIndex] = resume;
         }
     }
-
-    protected abstract int getIndex(String uuid);
 }
