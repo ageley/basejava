@@ -1,5 +1,8 @@
 package ru.topjava.webapp.storage;
 
+import ru.topjava.webapp.exception.ExistStorageException;
+import ru.topjava.webapp.exception.NotExistStorageException;
+import ru.topjava.webapp.exception.StorageException;
 import ru.topjava.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -21,9 +24,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public void save(Resume resume) {
         int resumeIndex = getIndex(resume.getUuid());
         if (resumeIndex >= 0) {
-            System.out.println(String.format("ERROR ru.topjava.webapp.storage.Storage.save: uuid '%1$s' is already exists", resume.getUuid()));
+            throw new ExistStorageException(resume.getUuid());
         } else if (size >= STORAGE_LENGTH) {
-            System.out.println("ERROR ru.topjava.webapp.storage.Storage.save: storage is full");
+            throw new StorageException("storage is full", resume.getUuid());
         } else {
             saveByIndex(resumeIndex, resume);
             size++;
@@ -33,7 +36,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void delete(String uuid) {
         int resumeIndex = getIndex(uuid);
         if (resumeIndex < 0) {
-            System.out.println(String.format("ERROR ru.topjava.webapp.storage.Storage.delete: uuid '%1$s' is not exists", uuid));
+            throw new NotExistStorageException(uuid);
         } else {
             deleteByIndex(resumeIndex);
             storage[size - 1] = null;
@@ -49,8 +52,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public Resume get(String uuid) {
         int resumeIndex = getIndex(uuid);
         if (resumeIndex < 0) {
-            System.out.println(String.format("ERROR ru.topjava.webapp.storage.Storage.get: uuid '%1$s' is not exists", uuid));
-            return null;
+            throw new NotExistStorageException(uuid);
         } else {
             return storage[resumeIndex];
         }
@@ -70,7 +72,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void update(Resume resume) {
         int resumeIndex = getIndex(resume.getUuid());
         if (resumeIndex < 0) {
-            System.out.println(String.format("ERROR ru.topjava.webapp.storage.Storage.update: uuid '%1$s' is not exists", resume.getUuid()));
+            throw new NotExistStorageException(resume.getUuid());
         } else {
             storage[resumeIndex] = resume;
         }
