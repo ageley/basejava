@@ -62,14 +62,12 @@ public class MainArray {
                     System.out.println(arrayStorage.size());
                     break;
                 case "save":
-                    resume = new Resume();
-                    resume.setUuid(uuid);
+                    resume = new Resume(uuid);
                     arrayStorage.save(resume);
                     printAll();
                     break;
                 case "update":
-                    resume = new Resume();
-                    resume.setUuid(uuid);
+                    resume = new Resume(uuid);
                     arrayStorage.update(resume);
                     printAll();
                     break;

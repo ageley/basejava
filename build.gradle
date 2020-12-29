@@ -1,0 +1,33 @@
+plugins {
+	id 'java'
+	id 'idea'
+}
+
+group = 'ru.topjava.webapp'
+version '1.0'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+//	maven { url "http://artapp/artifactory/public" }
+}
+
+sourceSets {
+	test.java.srcDir 'test'
+
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+configurations{
+	compile { 
+		transitive = true
+	}
+}
+
+dependencies {
+	compile 'junit:junit:4.13.1'
+}
