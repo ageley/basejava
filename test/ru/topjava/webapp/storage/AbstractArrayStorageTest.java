@@ -8,100 +8,103 @@ import ru.topjava.webapp.exception.NotExistStorageException;
 import ru.topjava.webapp.exception.StorageException;
 import ru.topjava.webapp.model.Resume;
 
-import java.util.Arrays;
-
 public abstract class AbstractArrayStorageTest {
-    private final Storage arrayStorage;
+    private final Storage storage;
     private final Resume resume1;
     private final Resume resume2;
     private final Resume resume3;
-    private final Resume resume3Update;
     private final Resume resume4;
 
-    public AbstractArrayStorageTest(AbstractArrayStorage arrayStorage) {
-        this.arrayStorage = arrayStorage;
+    public AbstractArrayStorageTest(Storage storage) {
+        this.storage = storage;
         resume1 = new Resume("uuid1");
         resume2 = new Resume("uuid2");
         resume3 = new Resume("uuid3");
-        resume3Update = new Resume("uuid3");
         resume4 = new Resume("uuid4");
     }
 
     @Before
-    public void setUp() throws Exception {
-        arrayStorage.clear();
-        arrayStorage.save(resume1);
-        arrayStorage.save(resume2);
-        arrayStorage.save(resume3);
+    public void setUp() {
+        storage.clear();
+        storage.save(resume1);
+        storage.save(resume2);
+        storage.save(resume3);
     }
 
     @Test
     public void save() {
-        arrayStorage.save(resume4);
+        storage.save(resume4);
+        Assert.assertEquals(resume4, storage.get("uuid4"));
+        Assert.assertEquals(4, storage.size());
     }
 
     @Test(expected = ExistStorageException.class)
     public void saveExist() {
-        arrayStorage.save(resume2);
+        storage.save(resume2);
     }
 
     @Test
     public void delete() {
-        arrayStorage.delete(resume2.getUuid());
+        storage.delete(resume2.getUuid());
+        try {
+            storage.get("uuid2");
+        } catch (NotExistStorageException e) {
+            //uuid2 is correctly deleted
+        }
+        Assert.assertEquals(2, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() {
-        arrayStorage.delete(resume4.getUuid());
+        storage.delete(resume4.getUuid());
     }
 
     @Test
     public void update() {
-        arrayStorage.update(resume3Update);
+        final Resume resume3Update = new Resume("uuid3");
+        storage.update(resume3Update);
+        Assert.assertEquals(resume3Update, storage.get("uuid3"));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        arrayStorage.update(resume4);
+        storage.update(resume4);
     }
 
     @Test
     public void get() {
-        Assert.assertEquals(resume1, arrayStorage.get("uuid1"));
+        Assert.assertEquals(resume1, storage.get("uuid1"));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void getNotExist() {
-        arrayStorage.get(resume4.getUuid());
+        storage.get(resume4.getUuid());
     }
 
     @Test
     public void getAll() {
-        Assert.assertEquals(0, Arrays.binarySearch(arrayStorage.getAll(), resume1));
-        Assert.assertEquals(-4, Arrays.binarySearch(arrayStorage.getAll(), resume4));
+        Assert.assertArrayEquals(new Resume[] {resume1, resume2, resume3}, storage.getAll());
     }
 
     @Test
     public void size() {
-        Assert.assertEquals(3, arrayStorage.size());
+        Assert.assertEquals(3, storage.size());
     }
 
     @Test
     public void clear() {
-        arrayStorage.clear();
-    }
-
-    @Test
-    public void saveMax() {
-        for (int i = 0; i < 10000 - 3; i++) {
-            arrayStorage.save(new Resume());
-        }
+        storage.clear();
     }
 
     @Test(expected = StorageException.class)
     public void saveStorageFull() {
-        for (int i = 0; i < 10000 - 2; i++) {
-            arrayStorage.save(new Resume());
+        try {
+            for (int i = 0; i < 10000 - 3; i++) {
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
+            Assert.fail("StorageException thrown earlier, than expected");
         }
+        storage.save(new Resume());
     }
 }
