@@ -77,4 +77,9 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[resumeIndex] = resume;
         }
     }
+
+    public int length() {
+        return STORAGE_LENGTH;
+    }
+
 }
