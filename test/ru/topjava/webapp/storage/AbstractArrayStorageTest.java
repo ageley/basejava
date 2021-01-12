@@ -43,15 +43,15 @@ public abstract class AbstractArrayStorageTest {
         storage.save(resume2);
     }
 
-    @Test
+    @Test(expected = NotExistStorageException.class)
     public void delete() {
-        storage.delete(resume2.getUuid());
         try {
-            storage.get("uuid2");
+            storage.delete(resume2.getUuid());
+            Assert.assertEquals(2, storage.size());
         } catch (NotExistStorageException e) {
-            //uuid2 is correctly deleted
+            Assert.fail("NotExistStorageException thrown earlier, than expected");
         }
-        Assert.assertEquals(2, storage.size());
+        storage.get("uuid2");
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -98,8 +98,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = StorageException.class)
     public void saveStorageFull() {
+        int initialSize = storage.size();
         try {
-            for (int i = 0; i < 10000 - 3; i++) {
+            for (int i = 0; i < storage.length() - initialSize; i++) {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
