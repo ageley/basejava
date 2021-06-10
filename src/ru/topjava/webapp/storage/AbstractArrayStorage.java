@@ -10,16 +10,15 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage implements Storage {
     protected static final int STORAGE_LENGTH = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LENGTH];
     protected int size = 0;
 
-    protected abstract int getIndex(String uuid);
-
-    protected abstract void saveByIndex(int resumeIndex, Resume resume);
-
-    protected abstract void deleteByIndex(int resumeIndex);
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
+    }
 
     public void save(Resume resume) {
         int resumeIndex = getIndex(resume.getUuid());
@@ -33,6 +32,15 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
+    public Resume get(String uuid) {
+        int resumeIndex = getIndex(uuid);
+        if (resumeIndex < 0) {
+            throw new NotExistStorageException(uuid);
+        } else {
+            return storage[resumeIndex];
+        }
+    }
+
     public void delete(String uuid) {
         int resumeIndex = getIndex(uuid);
         if (resumeIndex < 0) {
@@ -41,20 +49,6 @@ public abstract class AbstractArrayStorage implements Storage {
             deleteByIndex(resumeIndex);
             storage[size - 1] = null;
             size--;
-        }
-    }
-
-    public void clear() {
-        Arrays.fill(storage, 0, size, null);
-        size = 0;
-    }
-
-    public Resume get(String uuid) {
-        int resumeIndex = getIndex(uuid);
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage[resumeIndex];
         }
     }
 
@@ -77,9 +71,4 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[resumeIndex] = resume;
         }
     }
-
-    public int length() {
-        return STORAGE_LENGTH;
-    }
-
 }

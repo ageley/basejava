@@ -27,6 +27,4 @@ public interface Storage {
     int size();
 
     void update(Resume resume);
-
-    int length();
 }

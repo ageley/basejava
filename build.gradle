@@ -8,8 +8,8 @@ version '1.0'
 
 repositories {
 	mavenLocal()
-	mavenCentral()
-//	maven { url "http://artapp/artifactory/public" }
+//	mavenCentral()
+	maven { url "http://artapp/artifactory/public/" }
 }
 
 sourceSets {
@@ -23,11 +23,11 @@ sourceSets {
 }
 
 configurations{
-	compile { 
+	implementation { 
 		transitive = true
 	}
 }
 
 dependencies {
-	compile 'junit:junit:4.13.1'
+	implementation 'junit:junit:4.13.1'
 }
