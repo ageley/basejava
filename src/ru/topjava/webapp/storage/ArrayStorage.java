@@ -2,8 +2,6 @@ package ru.topjava.webapp.storage;
 
 import ru.topjava.webapp.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Unsorted array based storage for Resumes
  */
