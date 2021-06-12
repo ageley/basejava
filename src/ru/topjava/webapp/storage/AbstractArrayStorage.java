@@ -1,7 +1,5 @@
 package ru.topjava.webapp.storage;
 
-import ru.topjava.webapp.exception.ExistStorageException;
-import ru.topjava.webapp.exception.NotExistStorageException;
 import ru.topjava.webapp.exception.StorageException;
 import ru.topjava.webapp.model.Resume;
 
@@ -16,17 +14,19 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
 
     @Override
-    protected void clearStorage() {
+    public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
+    protected abstract void saveByIndexToArray(int resumeIndex, Resume resume);
+
     @Override
-    protected void saveToStorage(int resumeIndex, Resume resume) {
+    protected void saveByIndex(int resumeIndex, Resume resume) {
         if (size >= STORAGE_LENGTH) {
             throw new StorageException("storage is full", resume.getUuid());
         } else {
-            saveByIndex(resumeIndex, resume);
+            saveByIndexToArray(resumeIndex, resume);
             size++;
         }
     }
@@ -36,20 +36,22 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return storage[resumeIndex];
     }
 
+    protected abstract void deleteByIndexFromArray(int resumeIndex);
+
     @Override
-    protected void deleteFromStorage(int resumeIndex) {
-        deleteByIndex(resumeIndex);
+    protected void deleteByIndex(int resumeIndex) {
+        deleteByIndexFromArray(resumeIndex);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    protected Resume[] getAllFromStorage() {
+    public Resume[] getAll() {
         return Arrays.copyOf(storage, size);
     }
 
     @Override
-    protected int getSizeOfStorage() {
+    public int size() {
         return size;
     }
 

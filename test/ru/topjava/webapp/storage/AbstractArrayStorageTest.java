@@ -1,16 +1,13 @@
 package ru.topjava.webapp.storage;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import ru.topjava.webapp.exception.ExistStorageException;
-import ru.topjava.webapp.exception.NotExistStorageException;
 import ru.topjava.webapp.exception.StorageException;
 import ru.topjava.webapp.model.Resume;
 
 import static ru.topjava.webapp.storage.AbstractArrayStorage.STORAGE_LENGTH;
 
-public abstract class AbstractArrayStorageTest extends AbstractStorageTest{
+public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
 
     public AbstractArrayStorageTest(Storage storage) {
         super(storage);

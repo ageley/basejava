@@ -15,18 +15,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveByIndex(int resumeIndex, Resume resume) {
-        int resumeIndexNext = resumeIndex + 1;
-        int resumeIndexToSave = -resumeIndexNext;
-        int rangeToCopy = size + resumeIndexNext;
-        System.arraycopy(storage, -resumeIndexNext, storage, -resumeIndex, rangeToCopy);
-        storage[resumeIndexToSave] = resume;
+    protected void saveByIndexToArray(int resumeIndex, Resume resume) {
+        int resumeIndexInverted = -resumeIndex;
+        System.arraycopy(storage, resumeIndexInverted - 1, storage, resumeIndexInverted, size - resumeIndexInverted + 1);
+        storage[resumeIndexInverted - 1] = resume;
     }
 
     @Override
-    protected void deleteByIndex(int resumeIndex) {
-        int resumeIndexNext = resumeIndex + 1;
-        int rangeToCopy = size - resumeIndexNext;
-        System.arraycopy(storage, resumeIndexNext, storage, resumeIndex, rangeToCopy);
+    protected void deleteByIndexFromArray(int resumeIndex) {
+        System.arraycopy(storage, resumeIndex + 1, storage, resumeIndex, size - resumeIndex - 1);
     }
 }

@@ -20,7 +20,8 @@ public class MainArray {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Resume resume;
         String[] params;
-        storageChoice: while (true) {
+        storageChoice:
+        while (true) {
             System.out.print("Выберите тип хранилища - (sort | unsort | exit): ");
             params = reader.readLine().trim().toLowerCase().split(" ");
             if (params.length < 1 || params.length > 2) {

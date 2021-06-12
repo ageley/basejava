@@ -1,7 +1,5 @@
 package ru.topjava.webapp.storage;
 
-import ru.topjava.webapp.exception.ExistStorageException;
-import ru.topjava.webapp.exception.NotExistStorageException;
 import ru.topjava.webapp.model.Resume;
 
 import java.util.ArrayList;
@@ -31,13 +29,8 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void clearStorage() {
+    public void clear() {
         storage.clear();
-    }
-
-    @Override
-    protected void saveToStorage(int resumeIndex, Resume resume) {
-        saveByIndex(resumeIndex, resume);
     }
 
     @Override
@@ -46,18 +39,13 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void deleteFromStorage(int resumeIndex) {
-        deleteByIndex(resumeIndex);
-    }
-
-    @Override
-    protected Resume[] getAllFromStorage() {
+    public Resume[] getAll() {
         final Resume[] tempArray = new Resume[this.size()];
         return storage.toArray(tempArray);
     }
 
     @Override
-    protected int getSizeOfStorage() {
+    public int size() {
         return storage.size();
     }
 

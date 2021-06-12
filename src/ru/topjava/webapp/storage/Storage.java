@@ -2,10 +2,6 @@ package ru.topjava.webapp.storage;
 
 import ru.topjava.webapp.model.Resume;
 
-import java.util.Arrays;
-
-import static ru.topjava.webapp.storage.ArrayStorage.STORAGE_LENGTH;
-
 /**
  * Array based storage for Resumes
  */
