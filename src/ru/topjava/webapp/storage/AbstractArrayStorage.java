@@ -19,16 +19,20 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
+    protected void checkResumeCanBeSavedToArray(String uuid) {
+        if (size >= STORAGE_LENGTH) {
+            throw new StorageException("storage is full", uuid);
+        }
+    }
+
     protected abstract void saveByIndexToArray(int resumeIndex, Resume resume);
 
     @Override
     protected void saveByIndex(int resumeIndex, Resume resume) {
-        if (size >= STORAGE_LENGTH) {
-            throw new StorageException("storage is full", resume.getUuid());
-        } else {
-            saveByIndexToArray(resumeIndex, resume);
-            size++;
-        }
+        final String uuid = resume.getUuid();
+        checkResumeCanBeSavedToArray(uuid);
+        saveByIndexToArray(resumeIndex, resume);
+        size++;
     }
 
     @Override

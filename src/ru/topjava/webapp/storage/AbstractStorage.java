@@ -12,52 +12,45 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteByIndex(int resumeIndex);
 
-    public abstract void clear();
+    protected void checkResumeCanBeSaved(int resumeIndex, String uuid) {
+        if (resumeIndex >= 0) {
+            throw new ExistStorageException(uuid);
+        }
+    }
+
+    protected void checkResumeCanBeFound(int resumeIndex, String uuid) {
+        if (resumeIndex < 0) {
+            throw new NotExistStorageException(uuid);
+        }
+    }
 
     public final void save(Resume resume) {
-        int resumeIndex = getIndex(resume.getUuid());
-        if (resumeIndex >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            saveByIndex(resumeIndex, resume);
-        }
+        final String uuid = resume.getUuid();
+        final int resumeIndex = getIndex(uuid);
+        checkResumeCanBeSaved(resumeIndex, uuid);
+        saveByIndex(resumeIndex, resume);
     }
 
     protected abstract Resume getFromStorage(int resumeIndex);
 
     public final Resume get(String uuid) {
-        int resumeIndex = getIndex(uuid);
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return getFromStorage(resumeIndex);
-        }
+        final int resumeIndex = getIndex(uuid);
+        checkResumeCanBeFound(resumeIndex, uuid);
+        return getFromStorage(resumeIndex);
     }
 
     public final void delete(String uuid) {
-        int resumeIndex = getIndex(uuid);
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteByIndex(resumeIndex);
-        }
+        final int resumeIndex = getIndex(uuid);
+        checkResumeCanBeFound(resumeIndex, uuid);
+        deleteByIndex(resumeIndex);
     }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public abstract Resume[] getAll();
-
-    public abstract int size();
 
     protected abstract void updateInStorage(int resumeIndex, Resume resume);
 
     public final void update(Resume resume) {
-        int resumeIndex = getIndex(resume.getUuid());
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            updateInStorage(resumeIndex, resume);
-        }
+        final String uuid = resume.getUuid();
+        final int resumeIndex = getIndex(uuid);
+        checkResumeCanBeFound(resumeIndex, uuid);
+        updateInStorage(resumeIndex, resume);
     }
 }

@@ -10,15 +10,15 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected int getIndex(String uuid) {
-        Resume resumeToSearch = new Resume(uuid);
+        final Resume resumeToSearch = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, size, resumeToSearch);
     }
 
     @Override
     protected void saveByIndexToArray(int resumeIndex, Resume resume) {
-        int resumeIndexInverted = -resumeIndex;
-        System.arraycopy(storage, resumeIndexInverted - 1, storage, resumeIndexInverted, size - resumeIndexInverted + 1);
-        storage[resumeIndexInverted - 1] = resume;
+        final int resumeIndexToSave = -resumeIndex - 1;
+        System.arraycopy(storage, resumeIndexToSave, storage, resumeIndexToSave + 1, size - resumeIndexToSave);
+        storage[resumeIndexToSave] = resume;
     }
 
     @Override
