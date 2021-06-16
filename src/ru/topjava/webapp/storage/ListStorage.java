@@ -1,19 +1,21 @@
 package ru.topjava.webapp.storage;
 
-import ru.topjava.webapp.exception.ExistStorageException;
-import ru.topjava.webapp.exception.NotExistStorageException;
-import ru.topjava.webapp.exception.StorageException;
 import ru.topjava.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ListStorage extends AbstractStorage implements Storage {
-    protected final ArrayList<Resume> storage = new ArrayList<>();
+public class ListStorage extends AbstractStorage {
+    protected final List<Resume> storage = new ArrayList<>();
 
     @Override
     protected int getIndex(String uuid) {
-        final Resume tempResume = new Resume(uuid);
-        return storage.indexOf(tempResume);
+        for (int i = 0; i < storage.size(); i++) {
+            if (storage.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -26,52 +28,29 @@ public class ListStorage extends AbstractStorage implements Storage {
         storage.remove(resumeIndex);
     }
 
+    @Override
     public void clear() {
         storage.clear();
     }
 
-    public void save(Resume resume) {
-        int resumeIndex = getIndex(resume.getUuid());
-        if (resumeIndex >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            saveByIndex(resumeIndex, resume);
-        }
+    @Override
+    protected Resume getFromStorage(int resumeIndex) {
+        return storage.get(resumeIndex);
     }
 
-    public Resume get(String uuid) {
-        int resumeIndex = getIndex(uuid);
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage.get(resumeIndex);
-        }
-    }
-
-    public void delete(String uuid) {
-        int resumeIndex = getIndex(uuid);
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteByIndex(resumeIndex);
-        }
-    }
-
+    @Override
     public Resume[] getAll() {
         final Resume[] tempArray = new Resume[this.size()];
         return storage.toArray(tempArray);
     }
 
+    @Override
     public int size() {
         return storage.size();
     }
 
-    public void update(Resume resume) {
-        int resumeIndex = getIndex(resume.getUuid());
-        if (resumeIndex < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            storage.set(resumeIndex, resume);
-        }
+    @Override
+    protected void updateInStorage(int resumeIndex, Resume resume) {
+        storage.set(resumeIndex, resume);
     }
 }

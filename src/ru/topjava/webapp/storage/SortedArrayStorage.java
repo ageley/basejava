@@ -10,23 +10,19 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     protected int getIndex(String uuid) {
-        Resume resumeToSearch = new Resume(uuid);
+        final Resume resumeToSearch = new Resume(uuid);
         return Arrays.binarySearch(storage, 0, size, resumeToSearch);
     }
 
     @Override
-    protected void saveByIndex(int resumeIndex, Resume resume) {
-        int resumeIndexNext = resumeIndex + 1;
-        int resumeIndexToSave = -resumeIndexNext;
-        int rangeToCopy = size + resumeIndexNext;
-        System.arraycopy(storage, -resumeIndexNext, storage, -resumeIndex, rangeToCopy);
+    protected void saveByIndexToArray(int resumeIndex, Resume resume) {
+        final int resumeIndexToSave = -resumeIndex - 1;
+        System.arraycopy(storage, resumeIndexToSave, storage, resumeIndexToSave + 1, size - resumeIndexToSave);
         storage[resumeIndexToSave] = resume;
     }
 
     @Override
-    protected void deleteByIndex(int resumeIndex) {
-        int resumeIndexNext = resumeIndex + 1;
-        int rangeToCopy = size - resumeIndexNext;
-        System.arraycopy(storage, resumeIndexNext, storage, resumeIndex, rangeToCopy);
+    protected void deleteByIndexFromArray(int resumeIndex) {
+        System.arraycopy(storage, resumeIndex + 1, storage, resumeIndex, size - resumeIndex - 1);
     }
 }

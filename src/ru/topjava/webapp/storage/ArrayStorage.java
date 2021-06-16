@@ -2,8 +2,6 @@ package ru.topjava.webapp.storage;
 
 import ru.topjava.webapp.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Unsorted array based storage for Resumes
  */
@@ -19,12 +17,12 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveByIndex(int resumeIndex, Resume resume) {
+    protected void saveByIndexToArray(int resumeIndex, Resume resume) {
         storage[size] = resume;
     }
 
     @Override
-    protected void deleteByIndex(int resumeIndex) {
+    protected void deleteByIndexFromArray(int resumeIndex) {
         storage[resumeIndex] = storage[size - 1];
     }
 }
