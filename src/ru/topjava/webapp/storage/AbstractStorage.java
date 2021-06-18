@@ -6,22 +6,22 @@ import ru.topjava.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Object getIndex(String uuid);
 
-    protected abstract void saveByIndex(int resumeIndex, Resume resume);
+    protected abstract void saveByIndex(Object resumeIndex, Resume resume);
 
-    protected abstract void deleteByIndex(int resumeIndex);
+    protected abstract void deleteByIndex(Object resumeIndex);
 
-    private int findIndexIfResumeNotExist(String uuid) {
-        final int resumeIndex = getIndex(uuid);
+    protected Object findIndexIfResumeNotExist(String uuid) {
+        final int resumeIndex = (int) getIndex(uuid);
         if (resumeIndex >= 0) {
             throw new ExistStorageException(uuid);
         }
         return resumeIndex;
     }
 
-    private int findIndexIfResumeExist(String uuid) {
-        final int resumeIndex = getIndex(uuid);
+    protected Object findIndexIfResumeExist(String uuid) {
+        final int resumeIndex = (int) getIndex(uuid);
         if (resumeIndex < 0) {
             throw new NotExistStorageException(uuid);
         }
@@ -33,7 +33,7 @@ public abstract class AbstractStorage implements Storage {
         saveByIndex(findIndexIfResumeNotExist(uuid), resume);
     }
 
-    protected abstract Resume getFromStorage(int resumeIndex);
+    protected abstract Resume getFromStorage(Object resumeIndex);
 
     public final Resume get(String uuid) {
         return getFromStorage(findIndexIfResumeExist(uuid));
@@ -43,7 +43,7 @@ public abstract class AbstractStorage implements Storage {
         deleteByIndex(findIndexIfResumeExist(uuid));
     }
 
-    protected abstract void updateInStorage(int resumeIndex, Resume resume);
+    protected abstract void updateInStorage(Object resumeIndex, Resume resume);
 
     public final void update(Resume resume) {
         final String uuid = resume.getUuid();
