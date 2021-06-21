@@ -6,47 +6,51 @@ import ru.topjava.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected abstract Object getIndex(String uuid);
+    protected abstract Object getKey(String uuid);
 
-    protected abstract void saveByIndex(Object resumeIndex, Resume resume);
+    protected abstract void saveByKey(Object resumeKey, Resume resume);
 
-    protected abstract void deleteByIndex(Object resumeIndex);
+    protected abstract void deleteByKey(Object resumeKey);
 
-    protected Object findIndexIfResumeNotExist(String uuid) {
-        final int resumeIndex = (int) getIndex(uuid);
-        if (resumeIndex >= 0) {
-            throw new ExistStorageException(uuid);
-        }
-        return resumeIndex;
+    protected boolean isResumeExists(Object resumeKey) {
+        return ((int) resumeKey >= 0);
     }
 
-    protected Object findIndexIfResumeExist(String uuid) {
-        final int resumeIndex = (int) getIndex(uuid);
-        if (resumeIndex < 0) {
+    private Object findKeyIfResumeNotExist(String uuid) {
+        final Object resumeKey = getKey(uuid);
+        if (isResumeExists(resumeKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return resumeKey;
+    }
+
+    private Object findKeyIfResumeExist(String uuid) {
+        final Object resumeKey = getKey(uuid);
+        if (!isResumeExists(resumeKey)) {
             throw new NotExistStorageException(uuid);
         }
-        return resumeIndex;
+        return resumeKey;
     }
 
     public final void save(Resume resume) {
         final String uuid = resume.getUuid();
-        saveByIndex(findIndexIfResumeNotExist(uuid), resume);
+        saveByKey(findKeyIfResumeNotExist(uuid), resume);
     }
 
-    protected abstract Resume getFromStorage(Object resumeIndex);
+    protected abstract Resume getFromStorage(Object resumeKey);
 
     public final Resume get(String uuid) {
-        return getFromStorage(findIndexIfResumeExist(uuid));
+        return getFromStorage(findKeyIfResumeExist(uuid));
     }
 
     public final void delete(String uuid) {
-        deleteByIndex(findIndexIfResumeExist(uuid));
+        deleteByKey(findKeyIfResumeExist(uuid));
     }
 
-    protected abstract void updateInStorage(Object resumeIndex, Resume resume);
+    protected abstract void updateInStorage(Object resumeKey, Resume resume);
 
     public final void update(Resume resume) {
         final String uuid = resume.getUuid();
-        updateInStorage(findIndexIfResumeExist(uuid), resume);
+        updateInStorage(findKeyIfResumeExist(uuid), resume);
     }
 }

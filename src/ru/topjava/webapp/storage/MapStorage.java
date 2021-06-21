@@ -1,44 +1,31 @@
 package ru.topjava.webapp.storage;
 
-import ru.topjava.webapp.exception.ExistStorageException;
-import ru.topjava.webapp.exception.NotExistStorageException;
 import ru.topjava.webapp.model.Resume;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    protected final Map<String, Resume> storage = new HashMap<>();
+    private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    protected Object getIndex(String uuid) {
+    protected Object getKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected void saveByIndex(Object uuid, Resume resume) {
+    protected void saveByKey(Object uuid, Resume resume) {
         storage.put((String) uuid, resume);
     }
 
     @Override
-    protected void deleteByIndex(Object uuid) {
+    protected void deleteByKey(Object uuid) {
         storage.remove((String) uuid);
     }
 
     @Override
-    protected Object findIndexIfResumeNotExist(String uuid) {
-        if (storage.containsKey(uuid)) {
-            throw new ExistStorageException(uuid);
-        }
-        return uuid;
-    }
-
-    @Override
-    protected Object findIndexIfResumeExist(String uuid) {
-        if (!storage.containsKey(uuid)) {
-            throw new NotExistStorageException(uuid);
-        }
-        return uuid;
+    protected boolean isResumeExists(Object uuid) {
+        return storage.containsKey((String) uuid);
     }
 
     @Override

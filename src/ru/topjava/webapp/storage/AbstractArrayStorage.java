@@ -28,23 +28,23 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void saveByIndexToArray(int resumeIndex, Resume resume);
 
     @Override
-    protected void saveByIndex(Object resumeIndex, Resume resume) {
+    protected void saveByKey(Object resumeKey, Resume resume) {
         final String uuid = resume.getUuid();
         checkStorageIsNotFull(uuid);
-        saveByIndexToArray((int) resumeIndex, resume);
+        saveByIndexToArray((int) resumeKey, resume);
         size++;
     }
 
     @Override
-    protected Resume getFromStorage(Object resumeIndex) {
-        return storage[(int) resumeIndex];
+    protected Resume getFromStorage(Object resumeKey) {
+        return storage[(int) resumeKey];
     }
 
     protected abstract void deleteByIndexFromArray(int resumeIndex);
 
     @Override
-    protected void deleteByIndex(Object resumeIndex) {
-        deleteByIndexFromArray((int) resumeIndex);
+    protected void deleteByKey(Object resumeKey) {
+        deleteByIndexFromArray((int) resumeKey);
         storage[size - 1] = null;
         size--;
     }
@@ -60,7 +60,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateInStorage(Object resumeIndex, Resume resume) {
-        storage[(int) resumeIndex] = resume;
+    protected void updateInStorage(Object resumeKey, Resume resume) {
+        storage[(int) resumeKey] = resume;
     }
 }
